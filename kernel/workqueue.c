@@ -261,6 +261,35 @@ struct workqueue_struct {
 	char			name[];		/* I: workqueue name */
 };
 
+static struct kmem_cache *pwq_cache;
+
+/* see the comment above the definition of WQ_POWER_EFFICIENT */
+#ifdef CONFIG_WQ_POWER_EFFICIENT_DEFAULT
+static bool wq_power_efficient = true;
+#else
+static bool wq_power_efficient;
+#endif
+
+module_param_named(power_efficient, wq_power_efficient, bool, 0644);
+
+static DEFINE_MUTEX(wq_pool_mutex);	/* protects pools and workqueues list */
+static DEFINE_SPINLOCK(wq_mayday_lock);	/* protects wq->maydays list */
+
+static LIST_HEAD(workqueues);		/* PL: list of all workqueues */
+static bool workqueue_freezing;		/* PL: have wqs started freezing? */
+
+/* the per-cpu worker pools */
+static DEFINE_PER_CPU_SHARED_ALIGNED(struct worker_pool [NR_STD_WORKER_POOLS],
+				     cpu_worker_pools);
+
+static DEFINE_IDR(worker_pool_idr);	/* PR: idr of all pools */
+
+/* PL: hash of all unbound pools keyed by pool->attrs */
+static DEFINE_HASHTABLE(unbound_pool_hash, UNBOUND_POOL_HASH_ORDER);
+
+/* I: attributes used when instantiating standard unbound pools on demand */
+static struct workqueue_attrs *unbound_std_wq_attrs[NR_STD_WORKER_POOLS];
+
 struct workqueue_struct *system_wq __read_mostly;
 struct workqueue_struct *system_long_wq __read_mostly;
 struct workqueue_struct *system_nrt_wq __read_mostly;
@@ -2976,6 +3005,10 @@ struct workqueue_struct *__alloc_workqueue_key(const char *fmt,
 	va_start(args, lock_name);
 	va_copy(args1, args);
 	namelen = vsnprintf(NULL, 0, fmt, args) + 1;
+
+	/* see the comment above the definition of WQ_POWER_EFFICIENT */
+	if ((flags & WQ_POWER_EFFICIENT) && wq_power_efficient)
+		flags |= WQ_UNBOUND;
 
 	wq = kzalloc(sizeof(*wq) + namelen, GFP_KERNEL);
 	if (!wq)
