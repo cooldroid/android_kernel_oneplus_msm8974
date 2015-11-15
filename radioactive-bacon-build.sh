@@ -16,7 +16,7 @@ DEFCONFIG="radioactive_defconfig"
 
 # Kernel Details
 BASE_AK_VER="RADIOACTIVE"
-VER="RADIOACTIVE_AOSP_Marshmallow_V1.1"
+VER="RADIOACTIVE_AOSP_Marshmallow_V1.2"
 RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
@@ -33,7 +33,7 @@ REPACK_DIR="${HOME}/Android/AK-OnePone-AnyKernel2-caf"
 PATCH_DIR="${HOME}/Android/AK-OnePone-AnyKernel2-caf/patch"
 MODULES_DIR="${HOME}/Android/AK-OnePone-AnyKernel2-caf/modules"
 ZIP_MOVE="${HOME}/Android/releasesMM"
-ZIMAGE_DIR="${HOME}/Android/releasescaf"
+ZIMAGE_DIR="${HOME}/Android/AK-OnePone-AnyKernel2-caf"
 
 # Functions
 function clean_all {
