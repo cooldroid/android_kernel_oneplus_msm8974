@@ -16,7 +16,7 @@ DEFCONFIG="radioactive_defconfig"
 
 # Kernel Details
 BASE_AK_VER="RADIOACTIVE"
-VER="RADIOACTIVE_AOSP_Marshmallow_V1.2"
+VER="RADIOACTIVE_AOSP_Marshmallow_V1.3"
 RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
