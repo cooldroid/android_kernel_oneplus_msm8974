@@ -627,6 +627,9 @@ int wlan_hdd_send_avoid_freq_event(hdd_context_t *pHddCtx,
     }
 
     vendor_event = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                       NULL,
+#endif
                        sizeof(tHddAvoidFreqList),
                        QCA_NL80211_VENDOR_SUBCMD_AVOID_FREQUENCY_INDEX,
                        GFP_KERNEL);
@@ -758,6 +761,9 @@ static void wlan_hdd_cfg80211_nan_callback(void* ctx, tSirNanEvent* msg)
     }
 
     vendor_event = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                                   NULL,
+#endif
                                    data->event_data_len +
                                    NLMSG_HDRLEN,
                                    QCA_NL80211_VENDOR_SUBCMD_NAN_INDEX,
@@ -2192,6 +2198,9 @@ static void wlan_hdd_cfg80211_extscan_get_capabilities_ind(void *ctx, void *pMsg
         return;
     }
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                        NULL,
+#endif
                         EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                         QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_GET_CAPABILITIES_INDEX,
                         GFP_KERNEL);
@@ -2276,6 +2285,9 @@ static void wlan_hdd_cfg80211_extscan_start_rsp(void *ctx, void *pMsg)
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                                  NULL,
+#endif
                                   EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                                   QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_START_INDEX,
                                   GFP_KERNEL);
@@ -2338,6 +2350,9 @@ static void wlan_hdd_cfg80211_extscan_stop_rsp(void *ctx, void *pMsg)
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                                    NULL,
+#endif
                                     EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                                     QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_STOP_INDEX,
                                     GFP_KERNEL);
@@ -2387,6 +2402,9 @@ static void wlan_hdd_cfg80211_extscan_set_bss_hotlist_rsp(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                      NULL,
+#endif
                       EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                       QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_SET_BSSID_HOTLIST_INDEX,
                       GFP_KERNEL);
@@ -2436,6 +2454,9 @@ static void wlan_hdd_cfg80211_extscan_reset_bss_hotlist_rsp(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                      NULL,
+#endif
                       EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                       QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_RESET_BSSID_HOTLIST_INDEX,
                       GFP_KERNEL);
@@ -2485,6 +2506,9 @@ static void wlan_hdd_cfg80211_extscan_set_signf_wifi_change_rsp(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                NULL,
+#endif
                 EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                 QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_SET_SIGNIFICANT_CHANGE_INDEX,
                 GFP_KERNEL);
@@ -2535,6 +2559,9 @@ static void wlan_hdd_cfg80211_extscan_reset_signf_wifi_change_rsp(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+              NULL,
+#endif
               EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
               QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_RESET_SIGNIFICANT_CHANGE_INDEX,
               GFP_KERNEL);
@@ -2596,6 +2623,9 @@ static void wlan_hdd_cfg80211_extscan_cached_results_ind(void *ctx,
         totalResults -= EXTSCAN_MAX_CACHED_RESULTS_PER_IND;
 
         skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                NULL,
+#endif
                 EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                 QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_GET_CACHED_RESULTS_INDEX,
                 GFP_KERNEL);
@@ -2750,6 +2780,9 @@ static void wlan_hdd_cfg80211_extscan_hotlist_match_ind(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                      NULL,
+#endif
                       EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                       QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_HOTLIST_AP_FOUND_INDEX,
                       GFP_KERNEL);
@@ -2870,6 +2903,9 @@ static void wlan_hdd_cfg80211_extscan_signif_wifi_change_results_ind(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                       NULL,
+#endif
                     EXTSCAN_EVENT_BUF_SIZE,
                     QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_SIGNIFICANT_CHANGE_INDEX,
                     GFP_KERNEL);
@@ -2973,6 +3009,9 @@ static void wlan_hdd_cfg80211_extscan_full_scan_result_event(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+            NULL,
+#endif
             EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
             QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_FULL_SCAN_RESULT_INDEX,
             GFP_KERNEL);
@@ -3072,6 +3111,9 @@ static void wlan_hdd_cfg80211_extscan_scan_res_available_event(void *ctx,
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                NULL,
+#endif
                 EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                 QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_SCAN_RESULTS_AVAILABLE_INDEX,
                 GFP_KERNEL);
@@ -3123,6 +3165,9 @@ static void wlan_hdd_cfg80211_extscan_scan_progress_event(void *ctx, void *pMsg)
     }
 
     skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                            NULL,
+#endif
                             EXTSCAN_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                             QCA_NL80211_VENDOR_SUBCMD_EXTSCAN_SCAN_EVENT_INDEX,
                             GFP_KERNEL);
@@ -4527,7 +4572,12 @@ static int wlan_hdd_cfg80211_exttdls_get_status(struct wiphy *wiphy,
     return ret;
 }
 
-static int wlan_hdd_cfg80211_exttdls_callback(tANI_U8* mac,
+static int wlan_hdd_cfg80211_exttdls_callback(
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                              const tANI_U8* mac,
+#else
+                                              tANI_U8* mac,
+#endif
                                               tANI_S32 state,
                                               tANI_S32 reason,
                                               void *ctx)
@@ -4555,8 +4605,10 @@ static int wlan_hdd_cfg80211_exttdls_callback(tANI_U8* mac,
         hddLog(VOS_TRACE_LEVEL_ERROR, FL("TDLS external control is disabled"));
         return -ENOTSUPP;
     }
-    skb = cfg80211_vendor_event_alloc(
-                            pHddCtx->wiphy,
+    skb = cfg80211_vendor_event_alloc(pHddCtx->wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                            NULL,
+#endif
                             EXTTDLS_EVENT_BUF_SIZE + NLMSG_HDRLEN,
                             QCA_NL80211_VENDOR_SUBCMD_TDLS_STATE_CHANGE_INDEX,
                             GFP_KERNEL);
@@ -5652,8 +5704,11 @@ int wlan_hdd_cfg80211_init(struct device *dev,
 
     /* This will disable updating of NL channels from passive to
      * active if a beacon is received on passive channel. */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0))
+    wiphy->regulatory_flags |= REGULATORY_DISABLE_BEACON_HINTS;
+#else
     wiphy->flags |=   WIPHY_FLAG_DISABLE_BEACON_HINTS;
-
+#endif
 
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,4,0))
@@ -5661,7 +5716,11 @@ int wlan_hdd_cfg80211_init(struct device *dev,
                  |  WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD
                  |  WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL
                     | WIPHY_FLAG_OFFCHAN_TX;
-    wiphy->country_ie_pref = NL80211_COUNTRY_IE_IGNORE_CORE;
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0))
+    wiphy->regulatory_flags = REGULATORY_COUNTRY_IE_IGNORE;
+#else
+     wiphy->country_ie_pref = NL80211_COUNTRY_IE_IGNORE_CORE;
+#endif
 #endif
 
 #if  defined (WLAN_FEATURE_VOWIFI_11R) || defined (FEATURE_WLAN_ESE) || defined(FEATURE_WLAN_LFR)
@@ -5991,7 +6050,7 @@ void wlan_hdd_cfg80211_deregister_frames(hdd_adapter_t* pAdapter)
 
 #ifdef FEATURE_WLAN_WAPI
 void wlan_hdd_cfg80211_set_key_wapi(hdd_adapter_t* pAdapter, u8 key_index,
-                                     const u8 *mac_addr, u8 *key , int key_Len)
+                                     const u8 *mac_addr, const u8 *key , int key_Len)
 {
     hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
     tCsrRoamSetKey  setKey;
@@ -6163,10 +6222,16 @@ int wlan_hdd_cfg80211_alloc_new_beacon(hdd_adapter_t *pAdapter,
 
 }
 
-v_U8_t* wlan_hdd_cfg80211_get_ie_ptr(v_U8_t *pIes, int length, v_U8_t eid)
+v_U8_t* wlan_hdd_cfg80211_get_ie_ptr(
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                                     const v_U8_t *pIes,
+#else
+                                     v_U8_t *pIes,
+#endif
+                                     int length, v_U8_t eid)
 {
     int left = length;
-    v_U8_t *ptr = pIes;
+    v_U8_t *ptr =  (v_U8_t *)pIes;
     v_U8_t elem_id,elem_len;
 
     while(left >= 2)
@@ -8408,7 +8473,13 @@ int wlan_hdd_cfg80211_change_iface( struct wiphy *wiphy,
 
 #ifdef FEATURE_WLAN_TDLS
 static int wlan_hdd_tdls_add_station(struct wiphy *wiphy,
-          struct net_device *dev, u8 *mac, bool update, tCsrStaParams *StaParams)
+          struct net_device *dev,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+          const u8 *mac,
+#else
+          u8 *mac,
+#endif
+          bool update, tCsrStaParams *StaParams)
 {
     hdd_context_t *pHddCtx = wiphy_priv(wiphy);
     hddTdlsPeer_t *pTdlsPeer;
@@ -8641,7 +8712,11 @@ error:
 
 static int __wlan_hdd_change_station(struct wiphy *wiphy,
                                          struct net_device *dev,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                         const u8 *mac,
+#else
                                          u8 *mac,
+#endif
                                          struct station_parameters *params)
 {
     VOS_STATUS status = VOS_STATUS_SUCCESS;
@@ -8814,10 +8889,17 @@ static int __wlan_hdd_change_station(struct wiphy *wiphy,
     return status;
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+static int wlan_hdd_change_station(struct wiphy *wiphy,
+                                         struct net_device *dev,
+                                         const u8 *mac,
+                                         struct station_parameters *params)
+#else
 static int wlan_hdd_change_station(struct wiphy *wiphy,
                                          struct net_device *dev,
                                          u8 *mac,
                                          struct station_parameters *params)
+#endif
 {
     int ret;
 
@@ -9739,7 +9821,11 @@ static struct cfg80211_bss* wlan_hdd_cfg80211_inform_bss(
 
     rssi = (VOS_MIN ((pBssDesc->rssi + pBssDesc->sinr), 0))*100;
 
-    return cfg80211_inform_bss(wiphy, chan, pBssDesc->bssId,
+    return cfg80211_inform_bss(wiphy, chan,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                CFG80211_BSS_FTYPE_UNKNOWN,
+#endif
+                pBssDesc->bssId,
                 le64_to_cpu(*(__le64 *)pBssDesc->timeStamp),
                 pBssDesc->capabilityInfo,
                 pBssDesc->beaconInterval, ie, ie_length,
@@ -11509,12 +11595,20 @@ static int wlan_hdd_cfg80211_set_cipher( hdd_adapter_t *pAdapter,
  * This function is used to parse WPA/RSN IE's.
  */
 int wlan_hdd_cfg80211_set_ie( hdd_adapter_t *pAdapter,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                              const u8 *ie,
+#else
                               u8 *ie,
+#endif
                               size_t ie_len
                               )
 {
     hdd_wext_state_t *pWextState = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+    const u8 *genie = ie;
+#else
     u8 *genie = ie;
+#endif
     v_U16_t remLen = ie_len;
 #ifdef FEATURE_WLAN_WAPI
     v_U32_t akmsuite[MAX_NUM_AKM_SUITES];
@@ -11675,7 +11769,7 @@ int wlan_hdd_cfg80211_set_ie( hdd_adapter_t *pAdapter,
 
                    /* populating as ADDIE in beacon frames */
                    if (ccmCfgSetStr(WLAN_HDD_GET_HAL_CTX(pAdapter),
-                       WNI_CFG_PROBE_RSP_BCN_ADDNIE_DATA, genie - 2, eLen + 2,
+                       WNI_CFG_PROBE_RSP_BCN_ADDNIE_DATA, (u8 *)genie - 2, eLen + 2,
                        NULL, eANI_BOOLEAN_FALSE)== eHAL_STATUS_SUCCESS)
                    {
                        if (ccmCfgSetInt(WLAN_HDD_GET_HAL_CTX(pAdapter),
@@ -11873,7 +11967,13 @@ int wlan_hdd_cfg80211_set_ie( hdd_adapter_t *pAdapter,
  * Parse the received IE to find the WPA IE
  *
  */
-static bool hdd_isWPAIEPresent(u8 *ie, u8 ie_len)
+static bool hdd_isWPAIEPresent(
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+                               const u8 *ie,
+#else
+                               u8 *ie,
+#endif
+                               u8 ie_len)
 {
     v_U8_t eLen = 0;
     v_U16_t remLen = ie_len;
@@ -11909,9 +12009,9 @@ static bool hdd_isWPAIEPresent(u8 *ie, u8 ie_len)
  * This function is used to initialize the security
  * parameters during connect operation.
  */
-int wlan_hdd_cfg80211_set_privacy( hdd_adapter_t *pAdapter,
+int wlan_hdd_cfg80211_set_privacy(hdd_adapter_t *pAdapter,
                                    struct cfg80211_connect_params *req
-                                   )
+                                  )
 {
     int status = 0;
     hdd_wext_state_t *pWextState = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
@@ -12574,9 +12674,9 @@ static int __wlan_hdd_cfg80211_join_ibss( struct wiphy *wiphy,
     hdd_wext_state_t *pWextState = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
     tCsrRoamProfile          *pRoamProfile;
     int status;
-    bool alloc_bssid = VOS_FALSE;
     hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
     hdd_context_t *pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
+    tSirMacAddr bssid;
 
     ENTER();
 
@@ -12632,6 +12732,7 @@ static int __wlan_hdd_cfg80211_join_ibss( struct wiphy *wiphy,
                   "%s:ccmCfgStInt faild for WNI_CFG_IBSS_AUTO_BSSID", __func__);
            return -EIO;
        }
+       vos_mem_copy((v_U8_t *)bssid, (v_U8_t *)params->bssid, sizeof(bssid));
     }
     else if(pHddCtx->cfg_ini->isCoalesingInIBSSAllowed == 0)
     {
@@ -12642,17 +12743,10 @@ static int __wlan_hdd_cfg80211_join_ibss( struct wiphy *wiphy,
                     "%s:ccmCfgStInt faild for WNI_CFG_IBSS_AUTO_BSSID", __func__);
             return -EIO;
         }
-        params->bssid = vos_mem_malloc(VOS_MAC_ADDR_SIZE);
-        if (!params->bssid)
-        {
-            hddLog (VOS_TRACE_LEVEL_ERROR,
-                    "%s:Failed memory allocation", __func__);
-            return -EIO;
-        }
-        vos_mem_copy((v_U8_t *)params->bssid,
+
+        vos_mem_copy((v_U8_t *)bssid,
                      (v_U8_t *)&pHddCtx->cfg_ini->IbssBssid.bytes[0],
-                     VOS_MAC_ADDR_SIZE);
-        alloc_bssid = VOS_TRUE;
+                      sizeof(bssid));
     }
 
     /* Set Channel */
@@ -12719,23 +12813,14 @@ static int __wlan_hdd_cfg80211_join_ibss( struct wiphy *wiphy,
 
     /* Issue connect start */
     status = wlan_hdd_cfg80211_connect_start(pAdapter, params->ssid,
-            params->ssid_len, params->bssid, NULL,
+            params->ssid_len, (const u8 *)&bssid, NULL,
             pHddStaCtx->conn_info.operationChannel);
 
     if (0 > status)
-    {
         hddLog(VOS_TRACE_LEVEL_ERROR, "%s: connect failed", __func__);
-        return status;
-    }
 
-    if (NULL != params->bssid &&
-        pHddCtx->cfg_ini->isCoalesingInIBSSAllowed == 0 &&
-        alloc_bssid == VOS_TRUE)
-    {
-        vos_mem_free(params->bssid);
-    }
     EXIT();
-    return 0;
+    return status;
 }
 
 static int wlan_hdd_cfg80211_join_ibss( struct wiphy *wiphy,
@@ -13123,9 +13208,13 @@ static int wlan_hdd_cfg80211_get_txpower(struct wiphy *wiphy,
     return ret;
 }
 
-
 static int __wlan_hdd_cfg80211_get_station(struct wiphy *wiphy, struct net_device *dev,
-                                   u8* mac, struct station_info *sinfo)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                          const u8* mac,
+#else
+                                          u8* mac,
+#endif
+                                          struct station_info *sinfo)
 {
     hdd_adapter_t *pAdapter = WLAN_HDD_GET_PRIV_PTR( dev );
     hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
@@ -13575,9 +13664,13 @@ static int __wlan_hdd_cfg80211_get_station(struct wiphy *wiphy, struct net_devic
        EXIT();
        return 0;
 }
-
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+static int wlan_hdd_cfg80211_get_station(struct wiphy *wiphy, struct net_device *dev,
+                                   const u8* mac, struct station_info *sinfo)
+#else
 static int wlan_hdd_cfg80211_get_station(struct wiphy *wiphy, struct net_device *dev,
                                    u8* mac, struct station_info *sinfo)
+#endif
 {
     int ret;
 
@@ -13844,8 +13937,13 @@ static int wlan_hdd_cfg80211_del_station(struct wiphy *wiphy,
                                          struct net_device *dev,
                                          struct station_del_parameters *param)
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+static int wlan_hdd_cfg80211_del_station(struct wiphy *wiphy,
+                                         struct net_device *dev, const u8 *mac)
+#else
 static int wlan_hdd_cfg80211_del_station(struct wiphy *wiphy,
                                          struct net_device *dev, u8 *mac)
+#endif
 #endif
 {
     int ret;
@@ -13875,7 +13973,13 @@ static int wlan_hdd_cfg80211_del_station(struct wiphy *wiphy,
 }
 
 static int __wlan_hdd_cfg80211_add_station(struct wiphy *wiphy,
-          struct net_device *dev, u8 *mac, struct station_parameters *params)
+                                           struct net_device *dev,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                           const u8 *mac,
+#else
+                                           u8 *mac,
+#endif
+                                           struct station_parameters *params)
 {
     hdd_adapter_t *pAdapter;
     hdd_context_t *pHddCtx;
@@ -13920,8 +14024,14 @@ static int __wlan_hdd_cfg80211_add_station(struct wiphy *wiphy,
     return status;
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+static int wlan_hdd_cfg80211_add_station(struct wiphy *wiphy,
+          struct net_device *dev, const u8 *mac,
+          struct station_parameters *params)
+#else
 static int wlan_hdd_cfg80211_add_station(struct wiphy *wiphy,
           struct net_device *dev, u8 *mac, struct station_parameters *params)
+#endif
 {
     int ret;
 
@@ -14794,24 +14904,52 @@ static int wlan_hdd_cfg80211_sched_scan_stop(struct wiphy *wiphy,
 
 #ifdef FEATURE_WLAN_TDLS
 #if TDLS_MGMT_VERSION2
-static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device *dev,
-                     u8 *peer, u8 action_code,  u8 dialog_token,
-                      u16 status_code, u32 peer_capability, const u8 *buf, size_t len)
+static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                         struct net_device *dev,
+                                         u8 *peer, u8 action_code,
+                                         u8 dialog_token,
+                                         u16 status_code, u32 peer_capability,
+                                         const u8 *buf, size_t len)
+#else /* TDLS_MGMT_VERSION2 */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)) || defined(WITH_BACKPORTS)
+static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                         struct net_device *dev,
+                                         const u8 *peer, u8 action_code,
+                                         u8 dialog_token, u16 status_code,
+                                         u32 peer_capability, bool initiator,
+                                         const u8 *buf, size_t len)
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0))
+static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                         struct net_device *dev,
+                                         const u8 *peer, u8 action_code,
+                                         u8 dialog_token, u16 status_code,
+                                         u32 peer_capability, const u8 *buf,
+                                         size_t len)
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 15, 0))
+static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                         struct net_device *dev,
+                                         u8 *peer, u8 action_code,
+                                         u8 dialog_token,
+                                         u16 status_code, u32 peer_capability,
+                                         const u8 *buf, size_t len)
 #else
-static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device *dev,
-                     u8 *peer, u8 action_code,  u8 dialog_token,
-                     u16 status_code, const u8 *buf, size_t len)
+static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                         struct net_device *dev,
+                                         u8 *peer, u8 action_code,
+                                         u8 dialog_token,
+                                         u16 status_code, const u8 *buf,
+                                         size_t len)
+#endif
 #endif
 {
     hdd_adapter_t *pAdapter;
     hdd_context_t *pHddCtx;
-    u8 peerMac[6];
     VOS_STATUS status;
     int max_sta_failed = 0;
     int responder;
     long rc;
     int ret;
-#if !(TDLS_MGMT_VERSION2)
+#if !(TDLS_MGMT_VERSION2) && (LINUX_VERSION_CODE < KERNEL_VERSION(3,15,0))
     u32 peer_capability = 0;
 #endif
     tANI_U16 numCurrTdlsPeers;
@@ -14966,7 +15104,6 @@ static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device 
             }
         }
     }
-    vos_mem_copy(peerMac, peer, 6);
 
     VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
                "%s: " MAC_ADDRESS_STR " action %d, dialog_token %d status %d, len = %zu",
@@ -14979,7 +15116,7 @@ static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device 
     {
 
        hddTdlsPeer_t *pTdlsPeer;
-       pTdlsPeer = wlan_hdd_tdls_find_peer(pAdapter, peerMac, TRUE);
+       pTdlsPeer = wlan_hdd_tdls_find_peer(pAdapter, peer, TRUE);
 
        if(pTdlsPeer && TDLS_IS_CONNECTED(pTdlsPeer))
             responder = pTdlsPeer->is_responder;
@@ -15009,7 +15146,7 @@ static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device 
             }
         }
         if (SIR_MAC_TDLS_DIS_REQ != action_code) {
-            if (0 != wlan_hdd_tdls_set_cap(pAdapter, peerMac, eTDLS_CAP_SUPPORTED)) {
+            if (0 != wlan_hdd_tdls_set_cap(pAdapter, peer, eTDLS_CAP_SUPPORTED)) {
                 hddLog(VOS_TRACE_LEVEL_ERROR, FL("Failed to set TDLS capabilities"));
             }
         }
@@ -15092,13 +15229,13 @@ static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device 
 
     if (SIR_MAC_TDLS_SETUP_RSP == action_code)
     {
-        if (0 != wlan_hdd_tdls_set_responder(pAdapter, peerMac, TRUE)) {
+        if (0 != wlan_hdd_tdls_set_responder(pAdapter, peer, TRUE)) {
             hddLog(VOS_TRACE_LEVEL_ERROR, FL("Failed to set TDLS responder: Setup Response"));
         }
     }
     else if (SIR_MAC_TDLS_SETUP_CNF == action_code)
     {
-        if (0 != wlan_hdd_tdls_set_responder(pAdapter, peerMac, FALSE)) {
+        if (0 != wlan_hdd_tdls_set_responder(pAdapter, peer, FALSE)) {
             hddLog(VOS_TRACE_LEVEL_ERROR, FL("Failed to set TDLS responder: Setup Response"));
         }
     }
@@ -15125,29 +15262,72 @@ static int wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device *d
                                        u8 *peer, u8 action_code,  u8 dialog_token,
                                        u16 status_code, u32 peer_capability,
                                        const u8 *buf, size_t len)
+#else  /* TDLS_MGMT_VERSION2 */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0))
+static int wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                       struct net_device *dev,
+                                       const u8 *peer, u8 action_code,
+                                       u8 dialog_token, u16 status_code,
+                                       u32 peer_capability, bool initiator,
+                                       const u8 *buf, size_t len)
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+static int wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                       struct net_device *dev,
+                                       const u8 *peer, u8 action_code,
+                                       u8 dialog_token, u16 status_code,
+                                       u32 peer_capability, const u8 *buf,
+                                       size_t len)
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+static int wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
+                                       struct net_device *dev,
+                                       u8 *peer, u8 action_code,
+                                       u8 dialog_token,
+                                       u16 status_code, u32 peer_capability,
+                                       const u8 *buf, size_t len)
 #else
 static int wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy, struct net_device *dev,
                                        u8 *peer, u8 action_code,  u8 dialog_token,
                                        u16 status_code, const u8 *buf, size_t len)
 #endif
+#endif
 {
     int ret;
 
-     vos_ssr_protect(__func__);
+    vos_ssr_protect(__func__);
 #if TDLS_MGMT_VERSION2
-     ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code, dialog_token,
-                                         status_code, peer_capability, buf, len);
+    ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code,
+                                        dialog_token, status_code,
+                                        peer_capability, buf, len);
+#else /* TDLS_MGMT_VERSION2 */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)) || defined(WITH_BACKPORTS)
+    ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code,
+                                        dialog_token, status_code,
+                                        peer_capability, initiator,
+                                        buf, len);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0))
+    ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code,
+                                        dialog_token, status_code,
+                                        peer_capability, buf, len);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 15, 0))
+    ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code,
+                                        dialog_token, status_code,
+                                        peer_capability, buf, len);
 #else
-     ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code, dialog_token,
-                                         status_code, buf, len);
+    ret = __wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer, action_code,
+                                        dialog_token, status_code, buf, len);
 #endif
-     vos_ssr_unprotect(__func__);
+#endif
+    vos_ssr_unprotect(__func__);
 
-     return ret;
+    return ret;
 }
 
 int wlan_hdd_tdls_extctrl_config_peer(hdd_adapter_t *pAdapter,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                      const u8 *peer,
+#else
                                       u8 *peer,
+#endif
                                       tdls_req_params_t *tdls_peer_params,
                                       cfg80211_exttdls_callback callback)
 {
@@ -15247,7 +15427,13 @@ int wlan_hdd_tdls_extctrl_config_peer(hdd_adapter_t *pAdapter,
 
 }
 
-int wlan_hdd_tdls_extctrl_deconfig_peer(hdd_adapter_t *pAdapter, u8 *peer)
+int wlan_hdd_tdls_extctrl_deconfig_peer(hdd_adapter_t *pAdapter,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                        const u8 *peer
+#else
+                                        u8 *peer
+#endif
+)
 {
 
     hddTdlsPeer_t *pTdlsPeer;
@@ -15310,7 +15496,12 @@ int wlan_hdd_tdls_extctrl_deconfig_peer(hdd_adapter_t *pAdapter, u8 *peer)
 
 }
 static int __wlan_hdd_cfg80211_tdls_oper(struct wiphy *wiphy, struct net_device *dev,
-                 u8 *peer, enum nl80211_tdls_operation oper)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                         const u8 *peer,
+#else
+                                         u8 *peer,
+#endif
+                                         enum nl80211_tdls_operation oper)
 {
     hdd_adapter_t *pAdapter = WLAN_HDD_GET_PRIV_PTR(dev);
     hdd_context_t *pHddCtx = wiphy_priv(wiphy);
@@ -15797,7 +15988,12 @@ static int __wlan_hdd_cfg80211_tdls_oper(struct wiphy *wiphy, struct net_device 
 }
 
 static int wlan_hdd_cfg80211_tdls_oper(struct wiphy *wiphy, struct net_device *dev,
-                 u8 *peer, enum nl80211_tdls_operation oper)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
+                                       const u8 *peer,
+#else
+                                       u8 *peer,
+#endif
+                                       enum nl80211_tdls_operation oper)
 {
     int ret;
 
@@ -15819,9 +16015,20 @@ int wlan_hdd_cfg80211_send_tdls_discover_req(struct wiphy *wiphy,
     return wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer,
                             WLAN_TDLS_DISCOVERY_REQUEST, 1, 0, 0, NULL, 0);
 #else
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0))
+    return wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer,
+                            WLAN_TDLS_DISCOVERY_REQUEST, 1, 0, 0, 0, NULL, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0))
+    return wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer,
+                            WLAN_TDLS_DISCOVERY_REQUEST, 1, 0, 0, NULL, 0);
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0))
+    return wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer,
+                            WLAN_TDLS_DISCOVERY_REQUEST, 1, 0, 0, NULL, 0);
+#else
     return wlan_hdd_cfg80211_tdls_mgmt(wiphy, dev, peer,
                             WLAN_TDLS_DISCOVERY_REQUEST, 1, 0, NULL, 0);
 #endif
+#endif /* KERNEL_VERSION */
 }
 #endif
 
@@ -16315,7 +16522,11 @@ static int __wlan_hdd_cfg80211_testmode(struct wiphy *wiphy, void *data, int len
     return err;
 }
 
-static int wlan_hdd_cfg80211_testmode(struct wiphy *wiphy, void *data, int len)
+static int wlan_hdd_cfg80211_testmode(struct wiphy *wiphy,
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,12,0))
+                                      struct wireless_dev *wdev,
+#endif
+                                      void *data, int len)
 {
    int ret;
 
