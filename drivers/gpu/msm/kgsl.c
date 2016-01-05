@@ -932,7 +932,7 @@ static struct kgsl_process_private *kgsl_process_private_new(void)
 	mutex_lock(&kgsl_driver.process_mutex);
 	list_for_each_entry(private, &kgsl_driver.process_list, list) {
 		if (private->pid == task_tgid_nr(current)) {
-			if (!kgsl_process_private_get(private))
+			if (!kref_get_unless_zero(&private->refcount))
 				private = NULL;
 			goto done;
 		}
@@ -4574,6 +4574,20 @@ int kgsl_device_platform_probe(struct kgsl_device *device)
 		goto error_close_mmu;
 	}
 
+	/*
+	 * The default request type PM_QOS_REQ_ALL_CORES is
+	 * applicable to all CPU cores that are online and
+	 * would have a power impact when there are more
+	 * number of CPUs. PM_QOS_REQ_AFFINE_IRQ request
+	 * type shall update/apply the vote only to that CPU to
+	 * which IRQ's affinity is set to.
+	 */
+#ifdef CONFIG_SMP
+
+	device->pwrctrl.pm_qos_req_dma.type = PM_QOS_REQ_AFFINE_IRQ;
+	device->pwrctrl.pm_qos_req_dma.irq = device->pwrctrl.interrupt_num;
+
+#endif
 	pm_qos_add_request(&device->pwrctrl.pm_qos_req_dma,
 				PM_QOS_CPU_DMA_LATENCY,
 				PM_QOS_DEFAULT_VALUE);
