@@ -89,8 +89,7 @@
 #define ZERO_DEGREES_CELSIUS_IN_TENTH_KELVIN   2731
 #define BQ27541_INIT_DELAY   ((HZ)*1)
 
-#define BQ27541_CHG_CALIB_CNT   2 /* Num of calibration cycles after charging */
-#define BQ27541_CHG_DELAY_MS   55800 /* Required delay between raising pct. */
+#define BQ27541_CHG_CALIB_CNT   3 /* Num of calibration cycles after charging */
 #define BQ27541_SOC_CRIT   41 /* SOC threshold to stop limiting SOC drop rate */
 
 static DEFINE_MUTEX(i2c_read_mutex);
@@ -104,7 +103,6 @@ struct bq27541_old_data {
 	int mvolts;
 	int soc;
 	int temp;
-	u64 chg_time;
 };
 
 struct bq27541_device_info {
@@ -137,9 +135,6 @@ static void bq27541_set_suspend_state(struct bq27541_device_info *di,
 	spin_lock_irqsave(&i2c_pm_lock, flags);
 	di->suspended = suspended;
 	spin_unlock_irqrestore(&i2c_pm_lock, flags);
-
-	if (!suspended)
-		complete_all(&i2c_resume_done);
 }
 
 static void bq27541_wait_for_i2c(void)
@@ -218,7 +213,7 @@ static int bq27541_battery_temperature(struct bq27541_device_info *di)
 
 	di->old_data->temp = temp - ZERO_DEGREES_CELSIUS_IN_TENTH_KELVIN;
 
-	return temp - ZERO_DEGREES_CELSIUS_IN_TENTH_KELVIN;
+	return di->old_data->temp;
 }
 
 static int bq27541_battery_voltage(struct bq27541_device_info *di)
@@ -233,7 +228,7 @@ static int bq27541_battery_voltage(struct bq27541_device_info *di)
 
 	di->old_data->mvolts = volt * 1000;
 
-	return volt * 1000;
+	return di->old_data->mvolts;
 }
 
 static int bq27541_average_current(struct bq27541_device_info *di)
@@ -252,7 +247,7 @@ static int bq27541_average_current(struct bq27541_device_info *di)
 
 	di->old_data->curr = -curr;
 
-	return -curr;
+	return di->old_data->curr;
 }
 
 static int bq27541_battery_soc(struct bq27541_device_info *di)
@@ -277,17 +272,20 @@ static int bq27541_battery_soc(struct bq27541_device_info *di)
 	if (!di->old_data->soc)
 		di->old_data->soc = soc;
 
-	/* Scale up 1% at a time when charging */
 	if (soc > di->old_data->soc) {
-		u64 now = ktime_to_ms(ktime_get());
-		/* Require delay between each percentage increase */
-		if ((now - di->old_data->chg_time) > BQ27541_CHG_DELAY_MS) {
-			di->old_data->chg_time = now;
-			soc = di->old_data->soc + 1;
+		/*
+		 * Don't raise SOC while discharging, unless this is
+		 * a calibration cycle.
+		 */
+		int chg_status = qpnp_get_charging_status();
+		if (chg_status == POWER_SUPPLY_STATUS_DISCHARGING) {
+			if (di->old_data->is_charging)
+				di->old_data->is_charging--;
+			else
+				soc = di->old_data->soc;
 		} else {
-			soc = di->old_data->soc;
+			di->old_data->is_charging = BQ27541_CHG_CALIB_CNT;
 		}
-		di->old_data->is_charging = BQ27541_CHG_CALIB_CNT;
 	} else if (soc < di->old_data->soc && (soc > BQ27541_SOC_CRIT)) {
 		/*
 		 * Don't force SOC to scale down by 1% during first
@@ -304,7 +302,7 @@ static int bq27541_battery_soc(struct bq27541_device_info *di)
 
 	di->old_data->soc = soc;
 
-	return soc;
+	return di->old_data->soc;
 }
 
 /* I2C-specific code */
@@ -482,6 +480,8 @@ static int bq27541_battery_remove(struct i2c_client *client)
 static int bq27541_battery_resume(struct device *dev)
 {
 	bq27541_set_suspend_state(bq27541_di, false);
+
+	complete_all(&i2c_resume_done);
 
 	return 0;
 }
