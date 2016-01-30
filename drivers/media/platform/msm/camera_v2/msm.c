@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -35,6 +35,7 @@ static struct v4l2_device *msm_v4l2_dev;
 static struct list_head    ordered_sd_list;
 
 static struct msm_queue_head *msm_session_q;
+static atomic_t serv_running;
 
 /* config node envent queue */
 static struct v4l2_fh  *msm_eventq;
@@ -242,8 +243,10 @@ void msm_delete_stream(unsigned int session_id, unsigned int stream_id)
 	spin_lock_irqsave(&(session->stream_q.lock), flags);
 	list_del_init(&stream->list);
 	session->stream_q.len--;
+	kfree(stream);
+	stream = NULL;
 	spin_unlock_irqrestore(&(session->stream_q.lock), flags);
-	kzfree(stream);
+
 }
 
 static void msm_sd_unregister_subdev(struct video_device *vdev)
@@ -456,8 +459,12 @@ static inline int __msm_sd_close_subdevs(struct msm_sd_subdev *msm_sd,
 static inline int __msm_destroy_session_streams(void *d1, void *d2)
 {
 	struct msm_stream *stream = d1;
+	unsigned long flags;
+
 	pr_err("%s: Destroyed here due to list is not empty\n", __func__);
+	spin_lock_irqsave(&stream->stream_lock, flags);
 	INIT_LIST_HEAD(&stream->queued_list);
+	spin_unlock_irqrestore(&stream->stream_lock, flags);
 	return 0;
 }
 
@@ -625,13 +632,19 @@ static long msm_private_ioctl(struct file *file, void *fh,
 static int msm_unsubscribe_event(struct v4l2_fh *fh,
 	struct v4l2_event_subscription *sub)
 {
-	return v4l2_event_unsubscribe(fh, sub);
+	int rc = v4l2_event_unsubscribe(fh, sub);
+	if (rc == 0)
+		 atomic_set(&serv_running, 0);
+	return rc;
 }
 
 static int msm_subscribe_event(struct v4l2_fh *fh,
 	struct v4l2_event_subscription *sub)
 {
-	return v4l2_event_subscribe(fh, sub, 5);
+	int rc = v4l2_event_subscribe(fh, sub, 5);
+	if (rc == 0)
+		atomic_set(&serv_running, 1);
+	return rc;
 }
 
 static const struct v4l2_ioctl_ops g_msm_ioctl_ops = {
@@ -654,6 +667,18 @@ static unsigned int msm_poll(struct file *f,
 		rc = POLLIN | POLLRDNORM;
 
 	return rc;
+}
+
+static void msm_print_event_error(struct v4l2_event *event)
+{
+	struct msm_v4l2_event_data *event_data =
+		(struct msm_v4l2_event_data *)&event->u.data[0];
+
+	pr_err("Evt_type=%x Evt_id=%d Evt_cmd=%x\n", event->type,
+		event->id, event_data->command);
+	pr_err("Evt_session_id=%d Evt_stream_id=%d Evt_arg=%d\n",
+		event_data->session_id, event_data->stream_id,
+		event_data->arg_value);
 }
 
 /* something seriously wrong if msm_close is triggered
@@ -679,7 +704,7 @@ int msm_post_event(struct v4l2_event *event, int timeout)
 		spin_unlock_irqrestore(&msm_eventq_lock, flags);
 		pr_err("%s : msm event queue not available Line %d\n",
 				__func__, __LINE__);
-		return -ENODEV;
+		return -EIO;
 	}
 	spin_unlock_irqrestore(&msm_eventq_lock, flags);
 
@@ -691,6 +716,11 @@ int msm_post_event(struct v4l2_event *event, int timeout)
 	if (WARN_ON(!session)) {
 		pr_err("%s : session not found Line %d\n",
 				__func__, __LINE__);
+		return -EIO;
+	}
+
+	if (!atomic_read(&serv_running)) {
+		pr_info("%s: daemon hasn't subscribed yet!\n", __func__);
 		return -EIO;
 	}
 	mutex_lock(&session->lock);
@@ -716,17 +746,19 @@ int msm_post_event(struct v4l2_event *event, int timeout)
 		return rc;
 	}
 
-	/* should wait on session based condition */
 	rc = wait_for_completion_timeout(&cmd_ack->wait_complete,
-			msecs_to_jiffies(timeout));
+		msecs_to_jiffies(timeout));
 
 	if (list_empty_careful(&cmd_ack->command_q.list)) {
 		if (!rc) {
-			pr_err("%s: Timed out\n", __func__);
+			pr_err("%s: Timed out: event id is %d\n",
+				__func__, event->id);
+			msm_print_event_error(event);
 			rc = -ETIMEDOUT;
 		} else {
 			pr_err("%s: Error: No timeout but list empty!",
 					__func__);
+			msm_print_event_error(event);
 			mutex_unlock(&session->lock);
 			return -EINVAL;
 		}
@@ -1038,6 +1070,7 @@ static int __devinit msm_probe(struct platform_device *pdev)
 #endif
 
 	atomic_set(&pvdev->opened, 0);
+	atomic_set(&serv_running, 0);
 	video_set_drvdata(pvdev->vdev, pvdev);
 
 	msm_session_q = kzalloc(sizeof(*msm_session_q), GFP_KERNEL);
