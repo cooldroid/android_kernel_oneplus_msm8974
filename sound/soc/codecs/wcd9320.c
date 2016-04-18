@@ -7051,7 +7051,7 @@ static const struct wcd9xxx_reg_mask_val taiko_codec_reg_init_val[] = {
 	/* set DMIC CLK drive strength to 4mA */
 	{TAIKO_A_HDRIVE_OVERRIDE, 0x07, 0x01},
 
-#ifdef CONFIG_MACH_OPPO
+#ifdef CONFIG_MACH_MSM8974_14001
 	/* micbias pull down */
 	{TAIKO_A_MICB_1_CTL, 0x01, 0x01},
 #endif
